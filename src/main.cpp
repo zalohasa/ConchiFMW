@@ -173,29 +173,38 @@ void setup() {
 
 void parseSetColor(String cmd)
 {
-    int index = cmd.substring(0,3).toInt();
-    uint8_t r = (uint8_t)(cmd.substring(3,6).toInt());
-    uint8_t g = (uint8_t)(cmd.substring(6,9).toInt());
-    uint8_t b = (uint8_t)(cmd.substring(9,cmd.length()).toInt());
+    uint8_t index = cmd.substring(0,3).toInt();
 
-    flickData[index].r = r;
-    flickData[index].g = g;
-    flickData[index].b = b;
-    flickData[index].w = 0;
-    flickData[index].flags |= 1 << FLAG_DIRTY_BIT;
+    //Avoid commands with wrong indexes.
+    if (index < numLeds)
+    {
+        uint8_t r = (uint8_t)(cmd.substring(3,6).toInt());
+        uint8_t g = (uint8_t)(cmd.substring(6,9).toInt());
+        uint8_t b = (uint8_t)(cmd.substring(9,cmd.length()).toInt());
+        flickData[index].r = r;
+        flickData[index].g = g;
+        flickData[index].b = b;
+        flickData[index].w = 0;
+        flickData[index].flags |= 1 << FLAG_DIRTY_BIT;
+    }
 }
 
 void parseSetFlick(String cmd)
 {
-    int index = cmd.substring(0,3).toInt();
-    uint8_t flick = (uint8_t)(cmd.substring(3,4).toInt());
-    if (flick)
+    uint8_t index = cmd.substring(0,3).toInt();
+
+    //Avoid commands with wrong indexes.
+    if (index < numLeds)
     {
-        flickData[index].flags |= 1 << FLAG_FLICK_BIT;
-    }
-    else
-    {
-        flickData[index].flags &= ~(1 << FLAG_FLICK_BIT);
+        uint8_t flick = (uint8_t)(cmd.substring(3,4).toInt());
+        if (flick)
+        {
+            flickData[index].flags |= 1 << FLAG_FLICK_BIT;
+        }
+        else
+        {
+            flickData[index].flags &= ~(1 << FLAG_FLICK_BIT);
+        }
     }
 }
 
@@ -283,7 +292,7 @@ void parseCommand()
             {
                 flick = 1;
             }
-            serial_printf("%03d%03d%03d%03d%01d:", i, flickData[i].r,
+            serial_printf((char*)"%03d%03d%03d%03d%01d:", i, flickData[i].r,
                           flickData[i].g, flickData[i].b, flick);
         }
         Serial.println("");
