@@ -171,7 +171,6 @@ void setup() {
     }
 
     delayt = configuration.delay;
-    Serial.println("OK");
 }
 
 void parseSetColor(String cmd)
