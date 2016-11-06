@@ -62,6 +62,9 @@ struct FlickLed
 #define FLAG_ALREADY_INITIALIZED 0
 #define FLAG_RESET_REQUESTED 1
 
+#define COMMAND_LENGHT_SET_COLOR 13
+#define COMMAND_LENGHT_SET_FLICKERING 5
+
 
 struct Configuration
 {
@@ -245,12 +248,28 @@ void parseCommand()
     command.trim();
     if (command.startsWith("s"))
     {
-        Serial.println("OK");
-        parseSetColor(command.substring(1,command.length()));
+        if (command.length() == COMMAND_LENGHT_SET_COLOR)
+        {
+            Serial.println("OK");
+            parseSetColor(command.substring(1,command.length()));
+        }
+        else
+        {
+            Serial.print("KO: ");
+            Serial.println(command);
+        }
     } else if (command.startsWith("f"))
     {
-        Serial.println("OK");
-        parseSetFlick(command.substring(1,command.length()));
+        if (command.length() == COMMAND_LENGHT_SET_FLICKERING)
+        {
+            Serial.println("OK");
+            parseSetFlick(command.substring(1,command.length()));
+        }
+        else
+        {
+            Serial.print("KO: ");
+            Serial.println(command);
+        }
     }
     else if (command.startsWith("d"))
     {
